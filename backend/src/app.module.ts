@@ -3,6 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import { ProfilesModule } from './profiles/profiles.module';
+import { CategoriesModule } from './categories/categories.module';
+import { SwipesModule } from './swipes/swipes.module';
+import { MatchesModule } from './matches/matches.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -24,6 +30,12 @@ import { AppService } from './app.service';
           config.get<string>('NODE_ENV', 'development') !== 'production',
       }),
     }),
+    UsersModule,
+    ProfilesModule,
+    CategoriesModule,
+    SwipesModule,
+    MatchesModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
