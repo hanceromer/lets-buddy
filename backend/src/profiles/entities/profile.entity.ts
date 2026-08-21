@@ -29,10 +29,10 @@ export class Profile extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   bio: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   university: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   campus: string | null;
 
   @Column({ type: 'jsonb', default: () => "'[]'" })

@@ -28,3 +28,6 @@ npm-debug.log*
 
 # yerel dosya depolama (yüklenen profil fotoğrafları vb.)
 /uploads
+
+# yerel geliştirme PostgreSQL veri dizini (npm run db:start)
+/.pgdata
