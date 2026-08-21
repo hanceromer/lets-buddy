@@ -9,11 +9,14 @@ import { CategoriesModule } from './categories/categories.module';
 import { SwipesModule } from './swipes/swipes.module';
 import { MatchesModule } from './matches/matches.module';
 import { MessagesModule } from './messages/messages.module';
+import { AuthModule } from './auth/auth.module';
+import authConfig from './config/auth.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [authConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -36,6 +39,7 @@ import { MessagesModule } from './messages/messages.module';
     SwipesModule,
     MatchesModule,
     MessagesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
