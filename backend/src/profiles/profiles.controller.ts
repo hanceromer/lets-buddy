@@ -3,6 +3,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Patch,
   Post,
   UploadedFile,
@@ -12,8 +14,10 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import {
@@ -23,6 +27,7 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { imageFileFilter } from '../storage/image-file-filter';
 import { CreateProfileDto } from './dto/create-profile.dto';
+import { ProfileResponseDto } from './dto/profile-response.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ProfilesService } from './profiles.service';
 
@@ -37,12 +42,25 @@ export class ProfilesController {
 
   @Get('me')
   @ApiOperation({ summary: 'Giriş yapmış kullanıcının profilini döner' })
+  @ApiResponse({ status: 200, type: ProfileResponseDto })
+  @ApiResponse({ status: 401, description: 'Token eksik/geçersiz.' })
+  @ApiResponse({ status: 404, description: 'Kullanıcının henüz profili yok.' })
   getMyProfile(@CurrentUser() user: AuthenticatedUser) {
     return this.profilesService.getMyProfile(user.userId);
   }
 
   @Post()
   @ApiOperation({ summary: 'Giriş yapmış kullanıcı için profil oluşturur' })
+  @ApiResponse({ status: 201, type: ProfileResponseDto })
+  @ApiResponse({
+    status: 400,
+    description: 'Zorunlu alan eksik veya geçersiz kategori seçimi.',
+  })
+  @ApiResponse({ status: 401, description: 'Token eksik/geçersiz.' })
+  @ApiResponse({
+    status: 409,
+    description: 'Bu kullanıcı için zaten bir profil var.',
+  })
   createProfile(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateProfileDto,
@@ -52,6 +70,13 @@ export class ProfilesController {
 
   @Patch('me')
   @ApiOperation({ summary: 'Giriş yapmış kullanıcının profilini günceller' })
+  @ApiResponse({ status: 200, type: ProfileResponseDto })
+  @ApiResponse({
+    status: 400,
+    description: 'Geçersiz kategori seçimi veya alan değeri.',
+  })
+  @ApiResponse({ status: 401, description: 'Token eksik/geçersiz.' })
+  @ApiResponse({ status: 404, description: 'Önce profil oluşturulmalı.' })
   updateProfile(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: UpdateProfileDto,
@@ -60,8 +85,29 @@ export class ProfilesController {
   }
 
   @Post('me/photo')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Profil fotoğrafını yükler/değiştirir' })
   @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        photo: {
+          type: 'string',
+          format: 'binary',
+          description: 'jpeg/png/webp, maksimum 5MB',
+        },
+      },
+      required: ['photo'],
+    },
+  })
+  @ApiResponse({ status: 200, type: ProfileResponseDto })
+  @ApiResponse({
+    status: 400,
+    description: 'Dosya eksik veya desteklenmeyen format.',
+  })
+  @ApiResponse({ status: 401, description: 'Token eksik/geçersiz.' })
+  @ApiResponse({ status: 404, description: 'Önce profil oluşturulmalı.' })
   @UseInterceptors(
     FileInterceptor('photo', {
       limits: { fileSize: MAX_PHOTO_SIZE_BYTES },

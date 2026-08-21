@@ -11,6 +11,8 @@ import { randomInt } from 'node:crypto';
 import { Repository } from 'typeorm';
 import { MailerService } from '../mailer/mailer.service';
 import { User } from '../users/entities/user.entity';
+import { RequestOtpResponseDto } from './dto/request-otp-response.dto';
+import { VerifyOtpResponseDto } from './dto/verify-otp-response.dto';
 
 const OTP_HASH_SALT_ROUNDS = 10;
 
@@ -24,7 +26,7 @@ export class AuthService {
     private readonly mailerService: MailerService,
   ) {}
 
-  async requestOtp(rawEmail: string) {
+  async requestOtp(rawEmail: string): Promise<RequestOtpResponseDto> {
     const email = this.normalizeEmail(rawEmail);
 
     if (!this.isEmailDomainAllowed(email)) {
@@ -63,7 +65,10 @@ export class AuthService {
     };
   }
 
-  async verifyOtp(rawEmail: string, code: string) {
+  async verifyOtp(
+    rawEmail: string,
+    code: string,
+  ): Promise<VerifyOtpResponseDto> {
     const email = this.normalizeEmail(rawEmail);
 
     const user = await this.usersRepository
