@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Match } from './entities/match.entity';
+import { MatchesService } from './matches.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Match])],
-  exports: [TypeOrmModule],
+  providers: [MatchesService],
+  exports: [MatchesService, TypeOrmModule],
 })
 export class MatchesModule {}

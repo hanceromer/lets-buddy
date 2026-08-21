@@ -26,4 +26,7 @@ export class Swipe extends BaseEntity {
 
   @Column({ name: 'category_id' })
   categoryId: string;
+
+  @Column({ name: 'is_like' })
+  isLike: boolean;
 }
