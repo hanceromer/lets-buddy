@@ -51,4 +51,31 @@ export class MatchesService {
       throw error;
     }
   }
+
+  /**
+   * Eşleşmeyi döner, ama sadece istekte bulunan kullanıcı bu eşleşmenin
+   * tarafıysa; aksi halde null döner (yetkisiz erişim/varlık sızıntısını
+   * önlemek için 403 yerine 404 gibi ele alınabilir).
+   */
+  async findByIdForUser(
+    matchId: string,
+    userId: string,
+  ): Promise<Match | null> {
+    const match = await this.matchesRepository.findOne({
+      where: { id: matchId },
+    });
+    if (!match) {
+      return null;
+    }
+    if (match.userAId !== userId && match.userBId !== userId) {
+      return null;
+    }
+    return match;
+  }
+
+  async findAllForUser(userId: string): Promise<Match[]> {
+    return this.matchesRepository.find({
+      where: [{ userAId: userId }, { userBId: userId }],
+    });
+  }
 }
