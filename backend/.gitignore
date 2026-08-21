@@ -25,3 +25,6 @@ npm-debug.log*
 # tests
 /coverage
 /.nyc_output
+
+# yerel dosya depolama (yüklenen profil fotoğrafları vb.)
+/uploads

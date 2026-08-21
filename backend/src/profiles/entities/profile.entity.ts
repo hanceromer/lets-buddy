@@ -22,8 +22,9 @@ export class Profile extends BaseEntity {
   @Column()
   displayName: string;
 
-  @Column({ type: 'date' })
-  birthDate: string;
+  // Doğum tarihi bu fazda toplanmıyor (yaş doğrulama/KVKK adımında ele alınacak).
+  @Column({ type: 'date', nullable: true })
+  birthDate: string | null;
 
   @Column({ type: 'text', nullable: true })
   bio: string | null;

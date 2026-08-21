@@ -11,12 +11,13 @@ import { MatchesModule } from './matches/matches.module';
 import { MessagesModule } from './messages/messages.module';
 import { AuthModule } from './auth/auth.module';
 import authConfig from './config/auth.config';
+import storageConfig from './config/storage.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [authConfig],
+      load: [authConfig, storageConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
